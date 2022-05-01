@@ -1,3 +1,4 @@
+//Using Charset: gb 2132 
 #include <cstdio>
 #include <iostream>
 #include <io.h>
@@ -17,21 +18,19 @@ string __STR_ESD_PATH = "\\sources\\install.esd";
 string wepath;
 
 void FindWimEsd() {
-	for(char i = 'C'; i <= 'Z'; i++) {
+	for(char i = 'C'; i <= 'Z'; i++) { //从C盘到Z盘挨个判断 
 		char diskpath[3];
 		diskpath[0] = i;
 		diskpath[1] = ':';
 		diskpath[2] = '\0';
-		string qpath;
+		string qpath; //要寻找的路径 = 盘符 + "\sources\install.wim或esd" 
 		qpath = diskpath + __STR_WIM_PATH;
-//		cout << "寻找文件 在 " << qpath << endl;
 		if(_access(qpath.c_str(), 0) != -1) {
 			wepath = qpath;
 			cout << "已寻找到 WIM 文件 在 " << wepath << endl;
 			return;
 		}
 		qpath = diskpath + __STR_ESD_PATH;
-//		cout << "寻找文件 在 " << qpath << endl;
 		if(_access(qpath.c_str(), 0) != -1) {
 			wepath = qpath;
 			cout << "已寻找到 ESD 文件 在 " << wepath << endl;
@@ -39,7 +38,7 @@ void FindWimEsd() {
 		}
 	}
 	color(12);
-	ding();
+	ding(); //发出声音 
 	printf("警告：没有寻找到 WIM/ESD 文件，部分命令将出错\n");
 	printf("你可以通过命令 \"wepath\" 来手动指定路径\n");
 	wepath = "WIM/ESD_FILE_NOT_FOUND";
@@ -47,6 +46,7 @@ void FindWimEsd() {
 
 inline void version() {
 	printf("PowerCode Studio WinPE Helper\n");
+	// "　" 是全角空格，用于对齐内容 
 	printf("版本　　: %s\n", normal_version);
 	printf("内部版本: %s\n", inside_version);
 	printf("构建版本: %s\n", compile_version);
@@ -75,15 +75,15 @@ int main() {
 	
 	string inp;
 	while(1) {
-		cancel:; 
+		cancel:; //标记 如果用户取消操作直接 goto 
 		color(9);
-		csi();
+		csi(); //清空输入缓存 
 		printf("PEHelper > ");
 		color(14);
-		getline(cin, inp);
+		getline(cin, inp); //等待用户输入指令，不用cin的原因是cin输入空指令无法判断 
 		color(7);
-		transform(inp.begin(), inp.end(), inp.begin(), ::tolower);
-		       if(inp == "") goto cancel;
+		transform(inp.begin(), inp.end(), inp.begin(), ::tolower); //将指令转为小写 
+		       if(inp == "") goto cancel; //如果是空指令，直接忽略，重新一次开始 
 		  else if(inp == "exit") return 0;
 		  else if(inp == "help") {
 			printf("===== WinPE Helper 帮助 =====\n");
