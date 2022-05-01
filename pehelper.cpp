@@ -8,10 +8,10 @@
 #include <algorithm>
 #include <windows.h>
 #include "power_command.hpp"
-#define normal_version "10.4"
-#define inside_version "22.04131"
-#define compile_version "87ndz9"
-#define channel "R (Release)"
+#define normal_version "10.5"
+#define inside_version "22.05012"
+#define compile_version "z93end"
+#define channel "D (Dev)"
 using namespace std;
 string __STR_WIM_PATH = "\\sources\\install.wim";
 string __STR_ESD_PATH = "\\sources\\install.esd";
@@ -87,8 +87,9 @@ int main() {
 		  else if(inp == "exit") return 0;
 		  else if(inp == "help") {
 			printf("===== WinPE Helper 帮助 =====\n");
-			printf("\n  系统：\n");
+			printf("\n  通用：\n");
 			printf("HELP       获取 WinPE Helper 帮助\n");
+			printf("CLS        清空屏幕\n");
 			printf("VER        显示 WinPE Helper 版本\n");
 			printf("ABOUT      关于 WinPE Helper\n");
 			printf("EXIT       退出 WinPE Helper\n");
@@ -109,6 +110,10 @@ int main() {
 			
 		} else if(inp == "ver") {
 			version();
+		
+		} else if(inp == "cls") {
+			system("cls");
+			cso();
 		
 		} else if(inp == "about") {
 			about();
