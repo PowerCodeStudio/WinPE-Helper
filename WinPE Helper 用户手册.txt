@@ -1,0 +1,121 @@
+WinPE Helper 用户手册
+适用版本：10.4（22.040131）
+一：软件功能
+1. help
+分类：系统
+参数：无
+功能：列出所有可用命令的列表
+2. ver
+分类：系统
+功能：详细查看当前 WinPE Helper 的版本，包括“版本”“内部版本”“构建版本”“通道”。
+3. about
+分类：系统
+功能：关于 WinPE Helper 的信息
+4. exit
+分类：系统
+功能：退出 WinPE Helper
+5. wepath
+分类：系统安装
+功能：重新扫描或手动指定 WIM/ESD 文件的位置
+示例：
+PEHelper > wepath
+当前 WIM/ESD 文件 在 C:\sources\install.wim
+请选择：手动指定新路径[w] 自动重新扫描[s] 取消[c]？w
+请输入新路径：D:\document\windows_setup\install.wimPEHelper > wepath
+当前 WIM/ESD 文件 在 D:\document\windows_setup\install.wim
+请选择：手动指定新路径[w] 自动重新扫描[s] 取消[c]？s
+已寻找到 WIM 文件 在 C:\sources\install.wim6. weinfo
+分类：系统安装
+功能：获取已经设定的 WIM/ESD 文件的信息
+示例：
+PEHelper > weinfo
+
+部署映像服务和管理工具
+版本: 10.0.19041.844
+
+映像的详细信息: C:\sources\install.wim
+
+索引: 1
+名称: Windows 10 专业版
+描述: Windows 10 专业版
+大小: 15,679,704,732 个字节
+
+索引: 2
+……（此处省略其余内容）
+
+操作成功完成。说明：通常，一个 WIM/ESD 文件中有多个映像，这些映像通过“索引（Index）”来区分，每个索引代表着唯一的一个映像。
+7. sysinstall
+分类：系统安装
+功能：应用 WIM/ESD 映像（安装系统）
+示例：
+PEHelper > sysinstall
+映像文件位置: M:\sources\install.wim
+索引: 1
+目标应用目录: C:\
+> dism /Apply-Image /ImageFile:M:\sources\install.wim /Index:1 /ApplyDir:C:\
+确定？(Y/N) y
+
+部署映像服务和管理工具
+版本: 10.0.19041.844
+
+……（此处省略其余内容）
+
+操作成功完成。说明：
+索引可通过命令 weinfo 获取，目标应用目录（ApplyDir）就是欲将系统安装到的位置，推荐在磁盘的根目录。
+8. bcdboot
+分类：系统安装
+功能：创建 BCD 启动文件（俗称启动引导文件）
+示例：
+PEHelper > bcdboot
+请选择：使用UEFI启动[u] 使用传统启动[l] 取消[c]？l
+请输入 Windows 系统目录路径：C:\Windows
+请输入 Windows 系统所在分区盘符（格式为 X:）：C:
+> bcdboot C:\Windows /s C: /f BIOS
+确定？(Y/N) yPEHelper > bcdboot
+请选择：使用UEFI启动[u] 使用传统启动[l] 取消[c]？u
+请输入 Windows 系统目录路径：C:\Windows
+请输入 UEFI 分区盘符（格式为 X:）：O:
+> bcdboot C:\Windows /s O: /f UEFI
+确定？(Y/N) y说明：
+对于传统启动（Legacy），磁盘必须为 MBR 格式，“Windows 系统所在分区”是指在安装过程中目标应用目录所在的分区。
+对于 UEFI 启动，磁盘必须为 GPT 格式，必须有 EFI 系统分区（ESP）。
+9. notepad
+分类：软件
+功能：打开记事本
+10. regedit
+分类：软件
+功能：打开注册表编辑器
+11. cmd
+分类：软件
+功能：打开一个新的命令提示符窗口
+12. setup
+分类：软件
+功能：打开 Windows PE 自带的带有界面的安装工具
+13. copys
+分类：特色功能
+版本：1.0.22.04032
+功能：复制一个文件或文件夹及其子文件夹内的所有文件，或者仅复制目录树
+示例：
+PEHelper > copys
+COPYS 实用工具 [版本 1.0.22.04032]
+从：D:\1\
+到：D:\2\
+请选择：复制所有[a] 只复制目录结构[t] 取消[c]？a
+确定？y
+
+D:\1\1.txt
+D:\1\2.docx
+复制了 2 个文件PEHelper > copys
+COPYS 实用工具 [版本 1.0.22.04032]
+从：E:\1\
+到：E:\2\
+请选择：复制所有[a] 只复制目录结构[t] 取消[c]？t
+确定？y说明：
+对于单个文件，路径后不加“\”。对于一个目录/文件夹，路径后必须加“\”。仅复制目录树的意思是复制一个文件夹及其子文件，但不包括任何一个文件。
+二：常见问题
+1. 提示“没有寻找到 WIM/ESD 文件”
+答：程序仅查找每个分区下的 \sources\install.wim 和 \sources\install.esd，如果您的系统映像存放到了其他位置，请使用 wepath 命令手动指定位置
+2. 我在运行 weinfo 和 sysinstall 的时候 DISM 提示“错误：740”。
+答：请右键 WinPE Helper 主程序，选择“使用管理员权限运行”。
+3. 运行 copys 时，提示“分析错误”
+答：路径不需要括在引号里，请去除您所输入的所有引号
