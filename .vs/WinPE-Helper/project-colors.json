@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "45f8d4ea-25ae-41bd-9b9e-6f412a749d6c": {
+      "ProjectGuid": "45f8d4ea-25ae-41bd-9b9e-6f412a749d6c",
+      "DisplayName": "WinPE-Helper",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
