@@ -23,5 +23,8 @@
     <ClInclude Include="power_command.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="files.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>H:\WinPE-Helper\WinPE-Helper\x64\Debug\WinPE-Helper.exe</FullPath>
+      <FullPath>G:\项目\WinPE-Helper\x64\Debug\WinPE-Helper.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -1,18 +1,10 @@
 ﻿// WinPE-Helper.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 
-#include <cstdio>
-#include <iostream>
-#include <io.h>
-#include <cstring>
-#include <string>
-#include <cstdlib>
-#include <algorithm>
-#include <windows.h>
 #include "power_command.hpp"
-#define normal_version "10.6"
-#define inside_version "22.06051"
-#define compile_version "9end28"
-#define channel "R (Release)"
+#define normal_version "10.7"
+#define inside_version "22.07201"
+#define compile_version "9s03mzi"
+#define channel "D (Dev)"
 using namespace std;
 string __STR_WIM_PATH = "\\sources\\install.wim";
 string __STR_ESD_PATH = "\\sources\\install.esd";
@@ -29,12 +21,22 @@ void FindWimEsd() {
 		if (_access(qpath.c_str(), 0) != -1) {
 			wepath = qpath;
 			cout << "已寻找到 WIM 文件 在 " << wepath << endl;
+			if (!fileRead(wepath.c_str())) {
+				color(12);
+				ding(); //发出声音 
+				printf("警告：当前文件无法读取，请检查文件！\n");
+			}
 			return;
 		}
 		qpath = diskpath + __STR_ESD_PATH;
 		if (_access(qpath.c_str(), 0) != -1) {
 			wepath = qpath;
 			cout << "已寻找到 ESD 文件 在 " << wepath << endl;
+			if (!fileRead(wepath.c_str())) {
+				color(12);
+				ding(); //发出声音 
+				printf("警告：当前文件无法读取，请检查文件！\n");
+			}
 			return;
 		}
 	}

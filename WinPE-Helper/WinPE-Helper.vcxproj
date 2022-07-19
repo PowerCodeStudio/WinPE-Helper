@@ -146,6 +146,7 @@
     <ClCompile Include="WinPE-Helper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="files.h" />
     <ClInclude Include="power_command.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

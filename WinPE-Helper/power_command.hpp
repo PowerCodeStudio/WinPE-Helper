@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <windows.h>
+#include "files.h"
 using namespace std;
 
 void color(int x) { //ÉèÖÃ×ÖÌåÑÕÉ«
