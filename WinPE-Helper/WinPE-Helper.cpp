@@ -1,10 +1,10 @@
 ﻿// WinPE-Helper.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 
 #include "power_command.hpp"
-#define normal_version "10.7"
-#define inside_version "22.07201"
-#define compile_version "9s03mzi"
-#define channel "D (Dev)"
+#define normal_version "11.0"
+#define inside_version "22.08027"
+#define compile_version "9ejcozm"
+#define channel "R (Release)"
 using namespace std;
 string __STR_WIM_PATH = "\\sources\\install.wim";
 string __STR_ESD_PATH = "\\sources\\install.esd";
@@ -61,10 +61,35 @@ inline void about() {
 	printf("PowerCode Studio WinPE Helper\n");
 	printf("采用 Visual Studio with C++14 构建，");
 	printf("作者：CodeZhangBorui\n");
-	printf("联系方式：[B站]PowerCodeStudio [Github]CodeZhangBorui\n");
+	printf("联系方式：[BiliBili]PowerCodeStudio [Github]CodeZhangBorui\n");
 	color(13);
 	printf("Enjoy Coding Life!\n");
 	color(7);
+}
+
+inline void help() {
+	printf("===== WinPE Helper 帮助 =====\n");
+	printf("\n  通用：\n");
+	printf("HELP       获取 WinPE Helper 帮助\n");
+	printf("CLS        清空屏幕\n");
+	printf("VER        显示 WinPE Helper 版本\n");
+	printf("ABOUT      关于 WinPE Helper\n");
+	printf("EXIT       退出 WinPE Helper\n");
+	printf("\n  系统安装：\n");
+	printf("WEPATH     重新查找或手动指定 WIM/ESD 文件位置\n");
+	printf("WEINFO     获取 WIM/ESD 镜像信息\n");
+	printf("SYSINSTALL 使用 Dism 安装系统\n");
+	printf("BCDBOOT    设置启动项\n");
+	printf("\n  软件：\n");
+	printf("NOTEPAD    打开记事本\n");
+	printf("REGEDIT    打开注册表编辑器\n");
+	printf("CMD        打开新的 CMD 窗口\n");
+	printf("SETUP      打开 WindowsPE 自带 GUI 系统安装\n");
+	printf("\n  特色功能：\n");
+	printf("COPYS      复制一个文件夹及其子文件夹内的所有文件\n");
+	printf("EXPLORER   打开内置小型文件资源管理器\n");
+	printEndl(0);
+	printf("提示：可在任意功能提示输入时输入 C 来取消\n");
 }
 
 int main() {
@@ -80,36 +105,17 @@ int main() {
 	while (1) {
 	cancel:; //标记 如果用户取消操作直接 goto 
 		color(9);
-		csi(); //清空输入缓存 
-		printf("PEHelper > ");
+		printf("PEHelper > "); //命令提示符
 		color(14);
+		csi(); //清空输入缓存
+		cso(); //清空输出缓存
 		getline(cin, inp); //等待用户输入指令，不用cin的原因是cin输入空指令无法判断 
 		color(7);
 		transform(inp.begin(), inp.end(), inp.begin(), ::tolower); //将指令转为小写 
 		if (inp == "") goto cancel; //如果是空指令，直接忽略，重新一次开始 
 		else if (inp == "exit") return 0;
 		else if (inp == "help") {
-			printf("===== WinPE Helper 帮助 =====\n");
-			printf("\n  通用：\n");
-			printf("HELP       获取 WinPE Helper 帮助\n");
-			printf("CLS        清空屏幕\n");
-			printf("VER        显示 WinPE Helper 版本\n");
-			printf("ABOUT      关于 WinPE Helper\n");
-			printf("EXIT       退出 WinPE Helper\n");
-			printf("\n  系统安装：\n");
-			printf("WEPATH     重新查找或手动指定 WIM/ESD 文件位置\n");
-			printf("WEINFO     获取 WIM/ESD 镜像信息\n");
-			printf("SYSINSTALL 使用 Dism 安装系统\n");
-			printf("BCDBOOT    设置启动项\n");
-			printf("\n  软件：\n");
-			printf("NOTEPAD    打开记事本\n");
-			printf("REGEDIT    打开注册表编辑器\n");
-			printf("CMD        打开新的 CMD 窗口\n");
-			printf("SETUP      打开 WindowsPE 自带 GUI 系统安装\n");
-			printf("\n  特色功能：\n");
-			printf("COPYS      复制一个文件夹及其子文件夹内的所有文件\n");
-			printEndl(0);
-			printf("提示：可在任意功能提示输入时输入 C 来取消\n");
+			help();
 
 		}
 		else if (inp == "ver") {
@@ -129,23 +135,44 @@ int main() {
 			cout << "当前 WIM/ESD 文件 在 " << wepath << endl;
 			while (1) {
 				csi();
-				printf("请选择：手动指定新路径[w] 自动重新扫描[s] 取消[c]？");
-				char mode = getchar();
-				if (mode == 'w' || mode == 'W') {
-					printf("请输入新路径：");
-					cin >> wepath;
+				int mbret = MessageBox(GetConsoleWindow(), _T("请选择：手动指定新路径[是] 自动重新扫描[否] 取消？"), _T("选择"), MB_YESNOCANCEL);
+				if (mbret == IDYES) {
+					string inPath = SelectWimEsd();
+					if (inPath == "CANCEL") {
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
+					else if (!fileExits(inPath.c_str())) {
+						color(12);
+						ding(); //发出声音
+						printf("错误：此文件不存在，无法指定此文件。\n");
+						printf("你可以通过命令 \"wepath\" 来手动指定路径\n");
+						//wepath = "WIM/ESD_FILE_NOT_FOUND";
+						//goto cancel;
+					}
+					else if (!fileRead(inPath.c_str())) {
+						color(12);
+						ding(); //发出声音 
+						printf("警告：当前文件无法读取，请检查文件！\n");
+						wepath = inPath;
+						//goto cancel;
+					}
+					else {
+						wepath = inPath;
+						cout << "已选定文件：" << wepath << endl;
+					}
 					break;
 				}
-				else if (mode == 's' || mode == 'S') {
+				else if (mbret == IDNO) {
 					FindWimEsd();
 					break;
 				}
-				else if (mode == 'c' || mode == 'C') {
-					printf("用户取消操作\n");
+				else if (IDCANCEL) {
+					printf("用户取消操作\n\n");
 					goto cancel;
 				}
 				else {
-					printf("'%c' 不是一个有效的选项。", mode);
+					throw "Error: MessageBox return wrong, on module 'wepath'.";
 				}
 			}
 
@@ -161,36 +188,63 @@ int main() {
 			printf("索引: ");
 			cin >> index;
 			if (index == "c" || index == "C") { printf("用户取消操作\n\n"); goto cancel; }
-			printf("目标应用目录: ");
-			cin >> applydir;
-			if (applydir == "c" || applydir == "C") { printf("用户取消操作\n\n"); goto cancel; }
+			printf("请选择目标应用目录");
+			applydir = SelectFolder();
+			if (applydir == "CANCEL") {
+				clearLine();
+				printf("用户取消操作\n\n");
+				goto cancel;
+			}
+			clearLine();
+			cout << "目标应用目录: " << applydir << endl;
 			string qcmd = "dism /Apply-Image /ImageFile:" + wepath + " /Index:" + index + " /ApplyDir:" + applydir;
 			cout << "> " << qcmd << endl;
-			printf("确定？(Y/N) "); csi(); char yn = getchar(); if (yn == 'n' || yn == 'N') { printf("用户取消操作\n\n"); goto cancel; } printEndl(0);
+			int mbret = MessageBox(GetConsoleWindow(), _T("请查看控制台内的指令。\n确定？"), _T("警告"), MB_OKCANCEL | MB_ICONWARNING);
+			if (mbret == IDCANCEL) {
+				clearLine();
+				printf("用户取消操作\n\n");
+				goto cancel;
+			}
 			system(qcmd.c_str());
 
 		}
 		else if (inp == "bcdboot") {
 			while (1) {
 				csi();
-				printf("请选择：使用UEFI启动[u] 使用传统启动[l] 取消[c]？");
-				char mode = getchar();
-				if (mode == 'u' || mode == 'U') {
-					printf("请输入 Windows 系统目录路径：");
+				int mbret = MessageBox(GetConsoleWindow(), _T("请选择：使用UEFI启动[是] 使用传统启动[否] 取消？"), _T("选择"), MB_YESNOCANCEL);
+				if (mbret == IDYES) {
+					printf("请选择 Windows 系统目录路径：");
 					string winpath, uefiDisk, qcmd;
-					cin >> winpath;
+					winpath = SelectFolder();
+					if (winpath == "CANCEL") {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
+					cout << winpath << endl;
 					printf("请输入 EFI 系统分区（ESP）盘符（格式为 X:）：");
 					cin >> uefiDisk;
 					qcmd = "bcdboot " + winpath + " /s " + uefiDisk + " /f UEFI";
 					cout << "> " << qcmd << endl;
-					printf("确定？(Y/N) "); csi(); char yn = getchar(); if (yn == 'n' || yn == 'N') { printf("用户取消操作\n\n"); goto cancel; } printEndl(0);
+					int mbret = MessageBox(GetConsoleWindow(), _T("请查看控制台内的指令。\n确定？"), _T("警告"), MB_OKCANCEL | MB_ICONWARNING);
+					if (mbret == IDCANCEL) {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
 					system(qcmd.c_str());
 					break;
 				}
-				else if (mode == 'l' || mode == 'L') {
-					printf("请输入 Windows 系统目录路径：");
+				else if (mbret == IDNO) {
+					printf("请选择 Windows 系统目录路径：");
 					string winpath, sysDisk, qcmd;
-					cin >> winpath;
+					winpath = SelectFolder();
+					if (winpath == "CANCEL") {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
+					cout << winpath << endl;
 					sysDisk = winpath.substr(0, 2);
 					if (sysDisk.c_str()[1] != ':') {
 						printf("请输入 Windows 系统所在分区盘符（格式为 X:）：");
@@ -198,16 +252,21 @@ int main() {
 					}
 					qcmd = "bcdboot " + winpath + " /s " + sysDisk + " /f BIOS";
 					cout << "> " << qcmd << endl;
-					printf("确定？(Y/N) "); csi(); char yn = getchar(); if (yn == 'n' || yn == 'N') { printf("用户取消操作\n\n"); goto cancel; } printEndl(0);
+					int mbret = MessageBox(GetConsoleWindow(), _T("请查看控制台内的指令。\n确定？"), _T("警告"), MB_OKCANCEL | MB_ICONWARNING);
+					if (mbret == IDCANCEL) {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
 					system(qcmd.c_str());
 					break;
 				}
-				else if (mode == 'c' || mode == 'C') {
+				else if (mbret == IDCANCEL) {
 					printf("用户取消操作\n");
 					goto cancel;
 				}
 				else {
-					printf("'%c' 不是一个有效的选项。", mode);
+					throw "Error: MessageBox return wrong, on module 'bcdboot'.";
 				}
 			}
 
@@ -233,45 +292,63 @@ int main() {
 		}
 		else if (inp == "copys") {
 			printf("COPYS 实用工具 [版本 1.0.22.04032]\n");
-			//			printf("请注意：如果路径中含有空格，请将整段路径使用英文引号括起来\n");
 			string from, to, qcmd;
 			cout << "从：";
-			getline(cin, from);
-			if (from == "c" || from == "C") { printf("用户取消操作\n\n"); goto cancel; }
+			from = SelectFolder();
+			cout << from << endl;
+			if (from == "CANCEL") { printf("用户取消操作\n\n"); goto cancel; }
 			cout << "到：";
-			getline(cin, to);
-			if (to == "c" || to == "C") { printf("用户取消操作\n\n"); goto cancel; }
+			to = SelectFolder();
+			cout << to << endl;
+			if (to == "CANCEL") { printf("用户取消操作\n\n"); goto cancel; }
 			while (1) {
 				csi();
-				printf("请选择：复制所有[a] 只复制目录结构[t] 取消[c]？");
-				char mode = getchar();
-				if (mode == 'a' || mode == 'A') {
+				int mbret = MessageBox(GetConsoleWindow(), _T("请选择：复制所有[是] 只复制目录结构[否] 取消？"), _T("选择"), MB_YESNOCANCEL);
+				if (mbret == IDYES) {
+					cout << "复制所有。" << endl;
 					string qcmd = "xcopy \"" + from + "\" \"" + to + "\" /E /C /F /H";
-					//					cout << "> " << qcmd << endl;
-					cout << "确定？"; csi(); char yn = getchar(); if (yn == 'n' || yn == 'N') { printf("用户取消操作\n\n"); goto cancel; } printEndl(0);
+					//cout << "> " << qcmd << endl;
+					int mbret = MessageBox(GetConsoleWindow(), _T("请查看控制台内的信息。\n确定？"), _T("警告"), MB_OKCANCEL | MB_ICONWARNING);
+					if (mbret == IDCANCEL) {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
 					system(qcmd.c_str());
 					break;
 				}
-				else if (mode == 't' || mode == 'T') {
+				else if (mbret == IDNO) {
+					cout << "仅复制目录结构。" << endl;
 					string qcmd = "xcopy \"" + from + "\" \"" + to + "\" /E /C /F /H /T";
-					//					cout << "> " << qcmd << endl;
-					cout << "确定？"; csi(); char yn = getchar(); if (yn == 'n' || yn == 'N') { printf("用户取消操作\n\n"); goto cancel; } printEndl(0);
+					//cout << "> " << qcmd << endl;
+					int mbret = MessageBox(GetConsoleWindow(), _T("请查看控制台内的信息。\n确定？"), _T("警告"), MB_OKCANCEL | MB_ICONWARNING);
+					if (mbret == IDCANCEL) {
+						clearLine();
+						printf("用户取消操作\n\n");
+						goto cancel;
+					}
 					system(qcmd.c_str());
 					break;
 				}
-				else if (mode == 'c' || mode == 'C') {
+				else if (mbret == IDCANCEL) {
 					printf("用户取消操作\n");
 					goto cancel;
 				}
 				else {
-					printf("'%c' 不是一个有效的选项。", mode);
+					throw "Error: MessageBox return wrong, on module 'copys'.";
 				}
 			}
 		}
+		else if (inp == "explorer") {
+			puts("即将打开内置小型文件资源管理器。\n如果想打开一个文件，请右键文件选择打开。");
+			LittleExplorer();
+		}
 		else {
-			printf("命令无效\n请键入 \"help\" 或参考用户手册来获取更多信息\n");
+			//printf("命令无效\n请键入 \"help\" 或参考用户手册来获取更多信息\n"); 用户手册未更新
+			printf("命令无效\n请键入 \"help\" 来获取更多信息\n");
 		}
 		printEndl(0);
+		//cin.ignore(); //让 cin 忽略多余换行
 	}
 }
 

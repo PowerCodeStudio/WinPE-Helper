@@ -1,2 +1,41 @@
 ﻿  WinPE-Helper.cpp
+D:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\xstring(2588,23): warning C4244: “参数”: 从“wchar_t”转换到“const _Elem”，可能丢失数据
+          with
+          [
+              _Elem=char
+          ]
+D:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\xstring(2599): message : 查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(_Iter,const _Iter,std::input_iterator_tag)”的引用
+          with
+          [
+              _Iter=wchar_t *
+          ]
+D:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\xstring(2599): message : 查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(_Iter,const _Iter,std::input_iterator_tag)”的引用
+          with
+          [
+              _Iter=wchar_t *
+          ]
+D:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\xstring(2579): message : 查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(const _Iter,const _Iter,std::forward_iterator_tag)”的引用
+          with
+          [
+              _Iter=wchar_t *
+          ]
+D:\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include\xstring(2579): message : 查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct<wchar_t*>(const _Iter,const _Iter,std::forward_iterator_tag)”的引用
+          with
+          [
+              _Iter=wchar_t *
+          ]
+G:\项目\WinPE-Helper\WinPE-Helper\files.h(48): message : 查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+G:\项目\WinPE-Helper\WinPE-Helper\files.h(48): message : 查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
   WinPE-Helper.vcxproj -> G:\项目\WinPE-Helper\x64\Debug\WinPE-Helper.exe

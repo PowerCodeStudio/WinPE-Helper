@@ -52,6 +52,9 @@ inline void cso() { //Çå³ıÊä³öÇø»º´æ
 }
 
 inline void ding() {
-	const char sound_ding = 7;
-	putchar(sound_ding);
+	putchar(7);
+}
+
+inline void clearLine() {
+	printf("\r                                                                               \r");
 }
